@@ -58,13 +58,18 @@ function stripAppPath(argv: string[]): string[] | undefined {
 }
 
 /**
+ * Returns true if app path should be stripped in program args
+ */
+const shouldStripAppPath = (): boolean => !process.env['VSCODE_DEV'] || !process.env['VSCODE_STRIP_APP_PATH'];
+
+/**
  * Use this to parse raw code process.argv such as: `Electron . --verbose --wait`
  */
 export function parseMainProcessArgv(processArgv: string[]): NativeParsedArgs {
 	let [, ...args] = processArgv;
 
 	// If dev, remove the first non-option argument: it's the app location
-	if (process.env['VSCODE_DEV']) {
+	if (shouldStripAppPath()) {
 		args = stripAppPath(args) || [];
 	}
 
@@ -80,7 +85,7 @@ export function parseCLIProcessArgv(processArgv: string[]): NativeParsedArgs {
 	let [, , ...args] = processArgv; // remove the first non-option argument: it's always the app location
 
 	// If dev, remove the first non-option argument: it's the app location
-	if (process.env['VSCODE_DEV']) {
+	if (shouldStripAppPath()) {
 		args = stripAppPath(args) || [];
 	}
 
