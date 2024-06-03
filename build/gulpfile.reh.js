@@ -373,9 +373,6 @@ function packageTask(type, platform, arch, sourceFolderName, destinationFolderNa
 			.pipe(util.stripSourceMappingURL())
 			.pipe(jsFilter.restore);
 
-		const nodePath = `.build/node/v${nodeVersion}/${platform}-${arch}`;
-		const node = gulp.src(`${nodePath}/**`, { base: nodePath, dot: true });
-
 		let web = [];
 		if (type === 'reh-web') {
 			web = [
@@ -392,7 +389,6 @@ function packageTask(type, platform, arch, sourceFolderName, destinationFolderNa
 			license,
 			sources,
 			deps,
-			node,
 			...web
 		);
 
@@ -519,7 +515,6 @@ function tweakProductForServerWeb(product) {
 			const destinationFolderName = `vscode-${type}${dashed(platform)}${dashed(arch)}`;
 
 			const serverTaskCI = task.define(`vscode-${type}${dashed(platform)}${dashed(arch)}${dashed(minified)}-ci`, task.series(
-				gulp.task(`node-${platform}-${arch}`),
 				util.rimraf(path.join(BUILD_ROOT, destinationFolderName)),
 				packageTask(type, platform, arch, sourceFolderName, destinationFolderName)
 			));
