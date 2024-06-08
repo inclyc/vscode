@@ -12,28 +12,12 @@ if [ -n "$VSCODE_IPC_HOOK_CLI" ]; then
 	fi
 fi
 
-function app_realpath() {
-	SOURCE=$1
-	while [ -h "$SOURCE" ]; do
-		DIR=$(dirname "$SOURCE")
-		SOURCE=$(readlink "$SOURCE")
-		[[ $SOURCE != /* ]] && SOURCE=$DIR/$SOURCE
-	done
-	SOURCE_DIR="$( cd -P "$( dirname "$SOURCE" )" >/dev/null 2>&1 && pwd )"
-	echo "${SOURCE_DIR%%${SOURCE_DIR#*.app}}"
-}
-
-APP_PATH="$(app_realpath "${BASH_SOURCE[0]}")"
-if [ -z "$APP_PATH" ]; then
-	echo "Unable to determine app path from symlink : ${BASH_SOURCE[0]}"
-	exit 1
-fi
-CONTENTS="$APP_PATH/Contents"
-ELECTRON="$CONTENTS/MacOS/Electron"
-CLI="$CONTENTS/Resources/app/out/cli.js"
 export VSCODE_NODE_OPTIONS=$NODE_OPTIONS
 export VSCODE_NODE_REPL_EXTERNAL_MODULE=$NODE_REPL_EXTERNAL_MODULE
 unset NODE_OPTIONS
 unset NODE_REPL_EXTERNAL_MODULE
-ELECTRON_RUN_AS_NODE=1 "$ELECTRON" "$CLI" "$@"
+
+CLI="$VSCODE_PATH/resources/app/out/cli.js"
+ELECTRON_RUN_AS_NODE=1 "$ELECTRON" "$CLI" "$VSCODE_PATH/resources/app" "$@"
+
 exit $?
