@@ -46,7 +46,7 @@ function npmInstall(dir, opts) {
 		shell: true
 	};
 
-	const command = process.env['npm_command'] || 'install';
+	const command = 'install';
 
 	if (process.env['VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME'] && /^(.build\/distro\/npm\/)?remote$/.test(dir)) {
 		const userinfo = os.userInfo();
